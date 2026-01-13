@@ -7,7 +7,7 @@ CLI questionnaire that stores each completed run as one JSON object per line (JS
 """
 
 from __future__ import annotations
-
+import random
 import json
 import os
 from dataclasses import dataclass
@@ -72,6 +72,7 @@ def main() -> None:
         answers[q.qid] = prompt_likert(q)
 
     record = {
+        "id": random.randint(1000000, 9999999),
         "name": name,
         "answers": answers,
         "questionnaire_version": 1,

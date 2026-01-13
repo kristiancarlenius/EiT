@@ -19,15 +19,15 @@ def append_jsonl(path: str, obj: Dict[str, Any]) -> None:
 
 def pattern_mostly_agree(rng: random.Random) -> int:
     # Heavily weighted to 4-5
-    return rng.choices([1, 2, 3, 4, 5], weights=[1, 3, 8, 35, 53], k=1)[0]
+    return rng.choices([1, 2, 3, 4, 5], weights=[3, 8, 1, 35, 53], k=1)[0]
 
 
 def pattern_mostly_disagree(rng: random.Random) -> int:
-    return rng.choices([1, 2, 3, 4, 5], weights=[53, 35, 8, 3, 1], k=1)[0]
+    return rng.choices([1, 2, 3, 4, 5], weights=[53, 35, 1, 8, 3], k=1)[0]
 
 
 def pattern_neutral(rng: random.Random) -> int:
-    return rng.choices([1, 2, 3, 4, 5], weights=[5, 10, 70, 10, 5], k=1)[0]
+    return rng.choices([1, 2, 3, 4, 5], weights=[10, 25, 30, 25, 10], k=1)[0]
 
 
 def pattern_polarized(rng: random.Random) -> int:
@@ -42,8 +42,8 @@ def pattern_alternating_factory() -> Any:
     def _inner(rng: random.Random) -> int:
         state["toggle"] = not state["toggle"]
         if state["toggle"]:
-            return rng.choices([3, 4, 5], weights=[10, 45, 45], k=1)[0]
-        return rng.choices([1, 2, 3], weights=[45, 45, 10], k=1)[0]
+            return rng.choices([3, 4, 5], weights=[30, 5, 65], k=1)[0]
+        return rng.choices([1, 2, 3], weights=[65, 5, 30], k=1)[0]
 
     return _inner
 
@@ -62,6 +62,7 @@ def simulate_one_run(pattern_name: str, rng: random.Random) -> Dict[str, Any]:
     answers = {qid: pattern_fn(rng) for qid in QUESTIONS}
 
     return {
+        "id": random.randint(1000000, 9999999),
         "name": pattern_name,
         "answers": answers,
         "questionnaire_version": 1,

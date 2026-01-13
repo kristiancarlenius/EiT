@@ -27,7 +27,7 @@ def pattern_mostly_disagree(rng: random.Random) -> int:
 
 
 def pattern_neutral(rng: random.Random) -> int:
-    return rng.choices([1, 2, 3, 4, 5], weights=[10, 25, 30, 25, 10], k=1)[0]
+    return rng.choices([1, 2, 3, 4, 5], weights=[15, 30, 10, 30, 15], k=1)[0]
 
 
 def pattern_polarized(rng: random.Random) -> int:

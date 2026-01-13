@@ -71,12 +71,9 @@ def simulate_one_run(pattern_name: str, rng: random.Random) -> Dict[str, Any]:
 
 def main() -> None:
     rng = random.Random(42)  # deterministic; change/remove for different runs
-
-    # Example: generate 200 simulated runs across 5 “people”
-    names = ["sim_alex", "sim_bella", "sim_chris", "sim_dana", "sim_eli"]
     pattern_cycle: List[str] = ["mostly_agree", "neutral", "polarized", "mostly_disagree", "alternating"]
 
-    total_runs = 5000
+    total_runs = 500000
     for i in range(total_runs):
         pattern_name = pattern_cycle[i % len(pattern_cycle)]
         record = simulate_one_run(pattern_name, rng)

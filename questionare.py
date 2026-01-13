@@ -73,6 +73,7 @@ def main() -> None:
 
     record = {
         "id": random.randint(10000000, 99999999),
+        "sample": 1,
         "name": name,
         "answers": answers,
         "questionnaire_version": 1,

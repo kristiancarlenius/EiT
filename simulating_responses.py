@@ -62,7 +62,7 @@ def simulate_one_run(pattern_name: str, rng: random.Random) -> Dict[str, Any]:
     answers = {qid: pattern_fn(rng) for qid in QUESTIONS}
 
     return {
-        "id": random.randint(1000000, 9999999),
+        "id": random.randint(10000000, 99999999),
         "name": pattern_name,
         "answers": answers,
         "questionnaire_version": 1,
@@ -76,7 +76,7 @@ def main() -> None:
     names = ["sim_alex", "sim_bella", "sim_chris", "sim_dana", "sim_eli"]
     pattern_cycle: List[str] = ["mostly_agree", "neutral", "polarized", "mostly_disagree", "alternating"]
 
-    total_runs = 200
+    total_runs = 5000
     for i in range(total_runs):
         pattern_name = pattern_cycle[i % len(pattern_cycle)]
         record = simulate_one_run(pattern_name, rng)

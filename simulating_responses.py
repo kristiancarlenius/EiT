@@ -1,25 +1,14 @@
 #!/usr/bin/env python3
-"""
-Simulate taking the questionnaire multiple times with controlled random patterns.
-Appends generated runs to the same results.jsonl file.
-"""
 
 from __future__ import annotations
-
 import json
 import os
 import random
-from datetime import datetime, timezone
 from typing import Dict, Any, List
 
 
 QUESTIONS = ["q1", "q2", "q3"]  # Must match questionnaire qids
-RESULTS_PATH = "results.jsonl"
-
-
-def now_iso_utc() -> str:
-    return datetime.now(timezone.utc).isoformat()
-
+RESULTS_PATH = "resultdata.jsonl"
 
 def append_jsonl(path: str, obj: Dict[str, Any]) -> None:
     os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
@@ -69,16 +58,13 @@ PATTERNS = {
 }
 
 
-def simulate_one_run(name: str, pattern_name: str, rng: random.Random) -> Dict[str, Any]:
+def simulate_one_run(pattern_name: str, rng: random.Random) -> Dict[str, Any]:
     pattern_fn = PATTERNS[pattern_name]
     answers = {qid: pattern_fn(rng) for qid in QUESTIONS}
 
     return {
-        "timestamp_utc": now_iso_utc(),
-        "name": name,
+        "name": pattern_name,
         "answers": answers,
-        "simulated": True,
-        "pattern": pattern_name,
         "questionnaire_version": 1,
     }
 
@@ -92,9 +78,8 @@ def main() -> None:
 
     total_runs = 200
     for i in range(total_runs):
-        name = rng.choice(names)
         pattern_name = pattern_cycle[i % len(pattern_cycle)]
-        record = simulate_one_run(name, pattern_name, rng)
+        record = simulate_one_run(pattern_name, rng)
         append_jsonl(RESULTS_PATH, record)
 
     print(f"Wrote {total_runs} simulated runs to {RESULTS_PATH}.")

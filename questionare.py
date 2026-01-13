@@ -11,17 +11,10 @@ from __future__ import annotations
 import json
 import os
 from dataclasses import dataclass
-from datetime import datetime, timezone
 from typing import List, Dict, Any
 
 
-LIKERT_OPTIONS = [
-    "Strongly disagree",
-    "Disagree",
-    "Neutral",
-    "Agree",
-    "Strongly agree",
-]
+LIKERT_OPTIONS = ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"]
 
 
 @dataclass(frozen=True)
@@ -48,8 +41,10 @@ def prompt_name() -> str:
 
 def prompt_likert(question: Question) -> int:
     print("\n" + question.text)
+    question_str = ""
     for i, opt in enumerate(LIKERT_OPTIONS, start=1):
-        print(f"  {i}) {opt}")
+        question_str += opt+" "
+    print(question_str)#f"  {i}) {opt}")
 
     while True:
         raw = input("Select 1-5: ").strip()
@@ -58,10 +53,6 @@ def prompt_likert(question: Question) -> int:
             if 1 <= val <= 5:
                 return val
         print("Invalid input. Please enter a number from 1 to 5.")
-
-
-def now_iso_utc() -> str:
-    return datetime.now(timezone.utc).isoformat()
 
 
 def append_jsonl(path: str, obj: Dict[str, Any]) -> None:
@@ -82,16 +73,8 @@ def main() -> None:
         answers[q.qid] = prompt_likert(q)
 
     record = {
-        "timestamp_utc": now_iso_utc(),
         "name": name,
         "answers": answers,
-        "scale": {
-            "1": "Strongly disagree",
-            "2": "Disagree",
-            "3": "Neutral",
-            "4": "Agree",
-            "5": "Strongly agree",
-        },
         "questionnaire_version": 1,
     }
 

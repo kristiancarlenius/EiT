@@ -15,7 +15,6 @@ def append_jsonl(path: str, obj: Dict[str, Any]) -> None:
     with open(path, "a", encoding="utf-8") as f:
         f.write(json.dumps(obj, ensure_ascii=False) + "\n")
 
-
 # ---- Pattern generators (return answer 1..5) ----
 
 def pattern_mostly_agree(rng: random.Random) -> int:

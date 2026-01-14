@@ -21,38 +21,42 @@ LIKERT_OPTIONS = ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly
 class Question:
     qid: str
     text: str
+    norm: int
+    cont: bool
 
 
 QUESTIONS: List[Question] = [
-    Question("q1", "I often feel that I am on an emotional high"),
-    Question("q2", "I flare up quickly but get over it quickly"),
-    Question("q3", "When something upsets me I try to keep my emotions in balance"),
-    Question("q4", "I wonder why sometimes I feel so bitter about things"),
-    Question("q5", "I can usually understand my feelings"),
-    Question("q6", "When I’m upset, I can’t concentrate on anything"),
-    Question("q7", "I feel sad when I suffer even minor setbacks"),
-    Question("q8", "Sometimes I fly off the handle for no good reason"),
-    Question("q9", "Not knowing whether I am infected makes me feel emotionally distressed rather than just worried"),
-    Question("q10", "Dealing with my emotions is simple"),
-    Question("q11", "When I’m upset, I can’t seem to manage my emotions"),
-    Question("q12", "Being upset makes me feel worthless"),
-    Question("q13", "I have threatened people I know"),
-    Question("q14", "I am an even-tempered person"),
-    Question("q15", "I have trouble controlling my temper"),
-    Question("q16", "I sometimes feel like a powder keg ready to explode"),
-    Question("q17", "I have become so mad that I have broken things"),
-    Question("q18", "I get into fights a little more than the average person"),
-    Question("q19", "I think I should “stop and think” more instead of jumping into things too quickly"),
-    Question("q20", "I often do risky things without thinking of the consequences"),
-    Question("q21", "When trying to make a decision, I find myself constantly chewing it over"),
-    Question("q22", "I frequently buy things without thinking about whether or not I can really afford them"),
-    Question("q23", "I don’t like to make decisions quickly, even simple decisions, such as choosing what to wear, or what to have for dinner"),
-    Question("q24", "I would enjoy working at a job that required me to make a lot of split-second decisions"),
-    Question("q25", "My friends say that I’m somewhat argumentative  . Modify: that i have changed my personality"),
+    Question("q1", "I often feel that I am on an emotional high", 2, False),
+    Question("q2", "I flare up quickly but get over it quickly", 1, False),
+    Question("q3", "When something upsets me I try to keep my emotions in balance", 5, True),
+    Question("q4", "I wonder why sometimes I feel so bitter about things", 1, False),
+    Question("q5", "I can usually understand my feelings", 5, True),
+    Question("q6", "When I’m upset, I can’t concentrate on anything", 2, False),
+    Question("q7", "I feel sad when I suffer even minor setbacks", 2, False),
+    Question("q8", "Sometimes I fly off the handle for no good reason", 1, False),
+    Question("q9", "Not knowing whether I am infected makes me feel emotionally distressed rather than just worried", 2, False),
+    Question("q10", "Dealing with my emotions is simple", 4, True),
+    Question("q11", "When I’m upset, I can’t seem to manage my emotions", 4, False),
+    Question("q12", "Being upset makes me feel worthless", 1, False),
+    Question("q13", "I have threatened people I know", 1, False),
+    Question("q14", "I am an even-tempered person", 5, True),
+    Question("q15", "I have trouble controlling my temper", 1, False),
+    Question("q16", "I sometimes feel like a powder keg ready to explode", 1, False),
+    Question("q17", "I have become so mad that I have broken things", 1, False),
+    Question("q18", "I get into fights a little more than the average person", 3, False),
+    Question("q19", "I think I should “stop and think” more instead of jumping into things too quickly", 2, False),
+    Question("q20", "I often do risky things without thinking of the consequences", 1, False),
+    Question("q21", "When trying to make a decision, I find myself constantly chewing it over", 1, False),
+    Question("q22", "I frequently buy things without thinking about whether or not I can really afford them", 1, False),
+    Question("q23", "I don’t like to make decisions quickly, even simple decisions, such as choosing what to wear, or what to have for dinner", 1, True),
+    Question("q24", "I would enjoy working at a job that required me to make a lot of split-second decisions", 2, False),
+    """
+    Question("q25", "My friends say that I’m somewhat argumentative  . Modify: that i have changed my personality", ),
     Question("q26", "Overall, how happy do you consider your life to be?"),
     Question("q27", "How happy do you feel right now, at this moment?"),
     Question("q28", "When I’m upset, my emotions are so overwhelming they prevent me from doing things"),
     Question("q29", "I like sports and games in which you have to choose your next move very quickly"),
+    """
     # Add more questions here
 ]
 

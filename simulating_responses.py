@@ -7,7 +7,33 @@ import random
 from typing import Dict, Any, List
 
 
-QUESTIONS = ["q1", "q2", "q3"]  # Must match questionnaire qids
+QUESTIONS = [
+    ("q1", 2),
+    ("q2", 1),
+    ("q3", 5),
+    ("q4", 1),
+    ("q5", 5),
+    ("q6", 2),
+    ("q7", 2),
+    ("q8", 1),
+    ("q9", 2),
+    ("q10", 4),
+    ("q11", 4),
+    ("q12", 1),
+    ("q13", 1),
+    ("q14", 5),
+    ("q15", 1),
+    ("q16", 1),
+    ("q17", 1),
+    ("q18", 3),
+    ("q19", 2),
+    ("q20", 1),
+    ("q21", 1),
+    ("q22", 1), 
+    ("q23", 1), 
+    ("q24", 2)
+    ]  # Must match questionnaire qids
+
 RESULTS_PATH = "resultdata.jsonl"
 
 def append_jsonl(path: str, obj: Dict[str, Any]) -> None:
@@ -34,6 +60,17 @@ def pattern_polarized(rng: random.Random) -> int:
     # Mostly extremes 1 or 5
     return rng.choices([1, 2, 3, 4, 5], weights=[45, 5, 0, 5, 45], k=1)[0]
 
+def Normal_True(norm: int):
+    return
+
+def Infected_True():
+    return
+
+def Normal_False():
+    return
+
+def Infected_False():
+    return
 
 def pattern_alternating_factory() -> Any:
     # Alternates between agree-ish and disagree-ish
@@ -49,17 +86,26 @@ def pattern_alternating_factory() -> Any:
 
 
 PATTERNS = {
-    "mostly_agree": pattern_mostly_agree,
-    "mostly_disagree": pattern_mostly_disagree,
-    "neutral": pattern_neutral,
-    "polarized": pattern_polarized,
-    "alternating": pattern_alternating_factory(),  # stateful
+    "Healthy, Truthful": Normal_True,
+    "Healthy, Lying": Normal_False,
+    "Infected, Truthful": Infected_True,
+    "Infected, Lying": Infected_False,
 }
 
 
 def simulate_one_run(pattern_name: str, rng: random.Random) -> Dict[str, Any]:
     pattern_fn = PATTERNS[pattern_name]
-    answers = {qid: pattern_fn(rng) for qid in QUESTIONS}
+    if (qid[1]==1):
+        weight = [50, 25, 15, 7, 3]
+    elif (qid[1]==2):
+        weight = [25, 40, 20, 10, 5]
+    elif (qid[1]==3):
+        weight = [5, 25, 40, 25, 5]
+    elif (qid[1]==4):
+        weight = [5, 10, 20, 40, 25]
+    elif (qid[1]==5):
+        weight = [5, 10, 15, 25, 50]
+    answers = {qid[0]: pattern_fn(qid[1]) for qid in QUESTIONS}
 
     return {
         "id": random.randint(10000000, 99999999),

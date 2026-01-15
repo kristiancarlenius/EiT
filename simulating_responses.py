@@ -43,34 +43,55 @@ def append_jsonl(path: str, obj: Dict[str, Any]) -> None:
 
 # ---- Pattern generators (return answer 1..5) ----
 
-def pattern_mostly_agree(rng: random.Random) -> int:
-    # Heavily weighted to 4-5
-    return rng.choices([1, 2, 3, 4, 5], weights=[3, 8, 1, 35, 53], k=1)[0]
+def Normal_True(Questions):
+    ret = {}
+    for qid in Questions:
+        if (qid[1]==1):
+            ret[qid[0]] = random.Random.choice([1, 2, 3, 4, 5], weights=[50, 25, 15, 7, 3], k=1)[0]
 
+        elif (qid[1]==2):
+            ret[qid[0]] = random.Random.choice([1, 2, 3, 4, 5], weights=[25, 40, 20, 10, 5], k=1)[0]
 
-def pattern_mostly_disagree(rng: random.Random) -> int:
-    return rng.choices([1, 2, 3, 4, 5], weights=[53, 35, 1, 8, 3], k=1)[0]
+        elif (qid[1]==4):
+            ret[qid[0]] = random.Random.choice([1, 2, 3, 4, 5], weights=[5, 10, 20, 40, 25], k=1)[0]
 
+        elif (qid[1]==5):
+            ret[qid[0]] = random.Random.choice([1, 2, 3, 4, 5], weights=[3, 7, 15, 25, 50], k=1)[0]
 
-def pattern_neutral(rng: random.Random) -> int:
-    return rng.choices([1, 2, 3, 4, 5], weights=[15, 30, 10, 30, 15], k=1)[0]
+        else:
+            ret[qid[0]] = random.Random.choice([1, 2, 3, 4, 5], weights=[5, 25, 40, 25, 5], k=1)[0]
+    return ret
 
+def Infected_True(Questions):
+    ret = {}
+    for qid in Questions:
+        if (qid[1]==1):
+            ret[qid[0]] = random.Random.choice([1, 2, 3, 4, 5], weights=[3, 7, 15, 25, 50] , k=1)[0]
 
-def pattern_polarized(rng: random.Random) -> int:
-    # Mostly extremes 1 or 5
-    return rng.choices([1, 2, 3, 4, 5], weights=[45, 5, 0, 5, 45], k=1)[0]
+        elif (qid[1]==2):
+            ret[qid[0]] = random.Random.choice([1, 2, 3, 4, 5], weights=[5, 10, 20, 40, 25], k=1)[0]
 
-def Normal_True(norm: int):
-    return
+        elif (qid[1]==4):
+            ret[qid[0]] = random.Random.choice([1, 2, 3, 4, 5], weights=[25, 40, 20, 10, 5], k=1)[0]
 
-def Infected_True():
-    return
+        elif (qid[1]==5):
+            ret[qid[0]] = random.Random.choice([1, 2, 3, 4, 5], weights=[50, 25, 15, 7, 3], k=1)[0]
 
-def Normal_False():
-    return
+        else:
+            ret[qid[0]] = random.Random.choice([1, 2, 3, 4, 5], weights=[30, 17, 6, 17, 30], k=1)[0]
+    return ret
 
-def Infected_False():
-    return
+def Normal_False(Questions):
+    ret = {}
+    for qid in Questions:
+            ret[qid[0]] = random.Random.choice([1, 2, 3, 4, 5], weights=[20, 20, 20, 20, 20], k=1)[0]
+    return ret
+
+def Infected_False(Questions):
+    ret = {}
+    for qid in Questions:
+            ret[qid[0]] = random.Random.choice([1, 2, 3, 4, 5], weights=[20, 20, 20, 20, 20], k=1)[0]
+    return ret
 
 def pattern_alternating_factory() -> Any:
     # Alternates between agree-ish and disagree-ish
@@ -86,26 +107,16 @@ def pattern_alternating_factory() -> Any:
 
 
 PATTERNS = {
-    "Healthy, Truthful": Normal_True,
-    "Healthy, Lying": Normal_False,
-    "Infected, Truthful": Infected_True,
-    "Infected, Lying": Infected_False,
+    "Healthy-Truthful": Normal_True,
+    "Healthy-Lying": Normal_False,
+    "Infected-Truthful": Infected_True,
+    "Infected-Lying": Infected_False,
 }
 
 
 def simulate_one_run(pattern_name: str, rng: random.Random) -> Dict[str, Any]:
     pattern_fn = PATTERNS[pattern_name]
-    if (qid[1]==1):
-        weight = [50, 25, 15, 7, 3]
-    elif (qid[1]==2):
-        weight = [25, 40, 20, 10, 5]
-    elif (qid[1]==3):
-        weight = [5, 25, 40, 25, 5]
-    elif (qid[1]==4):
-        weight = [5, 10, 20, 40, 25]
-    elif (qid[1]==5):
-        weight = [5, 10, 15, 25, 50]
-    answers = {qid[0]: pattern_fn(qid[1]) for qid in QUESTIONS}
+    answers = pattern_fn(QUESTIONS)
 
     return {
         "id": random.randint(10000000, 99999999),

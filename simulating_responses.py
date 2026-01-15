@@ -47,50 +47,51 @@ def Normal_True(Questions):
     ret = {}
     for qid in Questions:
         if (qid[1]==1):
-            ret[qid[0]] = random.Random.choice([1, 2, 3, 4, 5], weights=[50, 25, 15, 7, 3], k=1)[0]
+            ret[qid[0]] = random.choices([1, 2, 3, 4, 5], weights=[50, 25, 15, 7, 3], k=1)[0]
 
         elif (qid[1]==2):
-            ret[qid[0]] = random.Random.choice([1, 2, 3, 4, 5], weights=[25, 40, 20, 10, 5], k=1)[0]
+            ret[qid[0]] = random.choices([1, 2, 3, 4, 5], weights=[25, 40, 20, 10, 5], k=1)[0]
 
         elif (qid[1]==4):
-            ret[qid[0]] = random.Random.choice([1, 2, 3, 4, 5], weights=[5, 10, 20, 40, 25], k=1)[0]
+            ret[qid[0]] = random.choices([1, 2, 3, 4, 5], weights=[5, 10, 20, 40, 25], k=1)[0]
 
         elif (qid[1]==5):
-            ret[qid[0]] = random.Random.choice([1, 2, 3, 4, 5], weights=[3, 7, 15, 25, 50], k=1)[0]
+            ret[qid[0]] = random.choices([1, 2, 3, 4, 5], weights=[3, 7, 15, 25, 50], k=1)[0]
 
         else:
-            ret[qid[0]] = random.Random.choice([1, 2, 3, 4, 5], weights=[5, 25, 40, 25, 5], k=1)[0]
+            ret[qid[0]] = random.choices([1, 2, 3, 4, 5], weights=[5, 25, 40, 25, 5], k=1)[0]
+    print(ret)
     return ret
 
 def Infected_True(Questions):
     ret = {}
     for qid in Questions:
         if (qid[1]==1):
-            ret[qid[0]] = random.Random.choice([1, 2, 3, 4, 5], weights=[3, 7, 15, 25, 50] , k=1)[0]
+            ret[qid[0]] = random.choices([1, 2, 3, 4, 5], weights=[3, 7, 15, 25, 50] , k=1)[0]
 
         elif (qid[1]==2):
-            ret[qid[0]] = random.Random.choice([1, 2, 3, 4, 5], weights=[5, 10, 20, 40, 25], k=1)[0]
+            ret[qid[0]] = random.choices([1, 2, 3, 4, 5], weights=[5, 10, 20, 40, 25], k=1)[0]
 
         elif (qid[1]==4):
-            ret[qid[0]] = random.Random.choice([1, 2, 3, 4, 5], weights=[25, 40, 20, 10, 5], k=1)[0]
+            ret[qid[0]] = random.choices([1, 2, 3, 4, 5], weights=[25, 40, 20, 10, 5], k=1)[0]
 
         elif (qid[1]==5):
-            ret[qid[0]] = random.Random.choice([1, 2, 3, 4, 5], weights=[50, 25, 15, 7, 3], k=1)[0]
+            ret[qid[0]] = random.choices([1, 2, 3, 4, 5], weights=[50, 25, 15, 7, 3], k=1)[0]
 
         else:
-            ret[qid[0]] = random.Random.choice([1, 2, 3, 4, 5], weights=[30, 17, 6, 17, 30], k=1)[0]
+            ret[qid[0]] = random.choices([1, 2, 3, 4, 5], weights=[30, 17, 6, 17, 30], k=1)[0]
     return ret
 
 def Normal_False(Questions):
     ret = {}
     for qid in Questions:
-            ret[qid[0]] = random.Random.choice([1, 2, 3, 4, 5], weights=[20, 20, 20, 20, 20], k=1)[0]
+            ret[qid[0]] = random.choices([1, 2, 3, 4, 5], weights=[20, 20, 20, 20, 20], k=1)[0]
     return ret
 
 def Infected_False(Questions):
     ret = {}
     for qid in Questions:
-            ret[qid[0]] = random.Random.choice([1, 2, 3, 4, 5], weights=[20, 20, 20, 20, 20], k=1)[0]
+            ret[qid[0]] = random.choices([1, 2, 3, 4, 5], weights=[20, 20, 20, 20, 20], k=1)[0]
     return ret
 
 def pattern_alternating_factory() -> Any:
@@ -128,11 +129,11 @@ def simulate_one_run(pattern_name: str, rng: random.Random) -> Dict[str, Any]:
 
 def main() -> None:
     rng = random.Random(42)  # deterministic; change/remove for different runs
-    pattern_cycle: List[str] = ["mostly_agree", "neutral", "polarized", "mostly_disagree", "alternating"]
+    pattern_cycle: List[str] = ["Healthy-Truthful", "Healthy-Lying", "Infected-Truthful", "Infected-Lying"]
 
-    total_runs = 500000
+    total_runs = 10000
     for i in range(total_runs):
-        pattern_name = pattern_cycle[i % len(pattern_cycle)]
+        pattern_name = pattern_cycle[random.choices([0, 1, 2, 3], weights=[85, 14.7, 0.2, 0.1], k=1)[0]]
         record = simulate_one_run(pattern_name, rng)
         append_jsonl(RESULTS_PATH, record)
 

@@ -6,7 +6,7 @@ import math
 import os
 import statistics
 from collections import defaultdict, Counter
-from typing import Dict, Any, List, Tuple, Iterable
+from typing import Dict, Any, List, Tuple
 
 import matplotlib.pyplot as plt
 
@@ -204,7 +204,6 @@ def line_with_error(
         means = [m for (m, s) in ms]
         stds = [s for (m, s) in ms]
         plt.plot(xs, means, marker="o", label=label)
-        # simple error band
         lower = [m - s if not (math.isnan(m) or math.isnan(s)) else float("nan") for m, s in zip(means, stds)]
         upper = [m + s if not (math.isnan(m) or math.isnan(s)) else float("nan") for m, s in zip(means, stds)]
         plt.fill_between(xs, lower, upper, alpha=0.15)
@@ -248,7 +247,6 @@ def stacked_flag_rates(
     lie_rate: Dict[str, List[float]],
     out_path: str,
 ) -> None:
-    # Two lines per profile: sick rate and lie rate
     plt.figure(figsize=(10, 5))
     for prof in profiles:
         plt.plot(weeks, sick_rate[prof], marker="o", label=f"{prof} sick-rate")
@@ -259,6 +257,72 @@ def stacked_flag_rates(
     plt.ylim(-0.02, 1.02)
     plt.legend(ncol=2)
     savefig(out_path)
+
+
+# ----------------------------
+# NEW: Confusion matrix + metrics
+# ----------------------------
+
+def update_confusion(conf: Dict[str, int], y_true: bool, y_pred: bool) -> None:
+    if y_true and y_pred:
+        conf["TP"] += 1
+    elif (not y_true) and y_pred:
+        conf["FP"] += 1
+    elif y_true and (not y_pred):
+        conf["FN"] += 1
+    else:
+        conf["TN"] += 1
+
+
+def confusion_metrics(conf: Dict[str, int]) -> Dict[str, float]:
+    tp, fp, fn, tn = conf["TP"], conf["FP"], conf["FN"], conf["TN"]
+    total = tp + fp + fn + tn
+
+    def safe_div(a: float, b: float) -> float:
+        return float("nan") if b == 0 else a / b
+
+    return {
+        "total": total,
+        "TP": tp,
+        "FP": fp,
+        "FN": fn,
+        "TN": tn,
+        "TPR_recall": safe_div(tp, tp + fn),     # sensitivity
+        "FPR": safe_div(fp, fp + tn),
+        "FNR": safe_div(fn, fn + tp),
+        "TNR_specificity": safe_div(tn, tn + fp),
+        "precision_PPV": safe_div(tp, tp + fp),
+        "accuracy": safe_div(tp + tn, total),
+    }
+
+
+def fmt_pct(x: float) -> str:
+    if math.isnan(x):
+        return "nan"
+    return f"{100.0 * x:.2f}%"
+
+
+def print_confusion_report(title: str, conf: Dict[str, int]) -> None:
+    m = confusion_metrics(conf)
+    total = m["total"]
+
+    print(f"\n=== {title} ===")
+    print(f"Total: {total}")
+
+    # Raw counts + % of total
+    for k in ["TP", "FP", "FN", "TN"]:
+        v = int(m[k])
+        pct = float("nan") if total == 0 else (v / total)
+        print(f"{k}: {v} ({fmt_pct(pct)})")
+
+    # Rates / probabilities
+    print("\nRates (probabilities):")
+    print(f"TPR / Recall (Sensitivity): {m['TPR_recall']:.4f} ({fmt_pct(m['TPR_recall'])})")
+    print(f"TNR / Specificity:          {m['TNR_specificity']:.4f} ({fmt_pct(m['TNR_specificity'])})")
+    print(f"FPR:                        {m['FPR']:.4f} ({fmt_pct(m['FPR'])})")
+    print(f"FNR:                        {m['FNR']:.4f} ({fmt_pct(m['FNR'])})")
+    print(f"Precision (PPV):            {m['precision_PPV']:.4f} ({fmt_pct(m['precision_PPV'])})")
+    print(f"Accuracy:                   {m['accuracy']:.4f} ({fmt_pct(m['accuracy'])})")
 
 
 # ----------------------------
@@ -286,6 +350,12 @@ def main() -> None:
     flags_sick_by_prof_week: Dict[str, Dict[int, List[int]]] = defaultdict(lambda: defaultdict(list))
     flags_lie_by_prof_week: Dict[str, Dict[int, List[int]]] = defaultdict(lambda: defaultdict(list))
 
+    # NEW: confusion matrices (overall + per-week)
+    conf_infection_overall = {"TP": 0, "FP": 0, "FN": 0, "TN": 0}
+    conf_lying_overall = {"TP": 0, "FP": 0, "FN": 0, "TN": 0}
+    conf_infection_by_week: Dict[int, Dict[str, int]] = defaultdict(lambda: {"TP": 0, "FP": 0, "FN": 0, "TN": 0})
+    conf_lying_by_week: Dict[int, Dict[str, int]] = defaultdict(lambda: {"TP": 0, "FP": 0, "FN": 0, "TN": 0})
+
     for r in rows:
         if "name" not in r or "questionnaire_version" not in r:
             continue
@@ -309,8 +379,20 @@ def main() -> None:
         all_points_health_lie.append((hs, ls))
         points_by_week[week].append((hs, ls))
 
-        flags_sick_by_prof_week[profile][week].append(int(is_flag_sick(hs, es)))
-        flags_lie_by_prof_week[profile][week].append(int(is_flag_lying(ls, en)))
+        pred_sick = is_flag_sick(hs, es)
+        pred_lying = is_flag_lying(ls, en)
+
+        flags_sick_by_prof_week[profile][week].append(int(pred_sick))
+        flags_lie_by_prof_week[profile][week].append(int(pred_lying))
+
+        # Ground truth inferred from profile name (your simulation design)
+        true_infected = ("Infected" in profile)
+        true_lying = ("Lying" in profile)
+
+        update_confusion(conf_infection_overall, true_infected, pred_sick)
+        update_confusion(conf_lying_overall, true_lying, pred_lying)
+        update_confusion(conf_infection_by_week[week], true_infected, pred_sick)
+        update_confusion(conf_lying_by_week[week], true_lying, pred_lying)
 
     profiles = sorted(health_by_prof_week.keys())
     if not profiles:
@@ -444,7 +526,6 @@ def main() -> None:
         out_path=os.path.join(OUTPUT_DIR, "hexbin_health_vs_lie_all.png"),
     )
 
-    # Per-week density (one image per week; not per profile)
     for w in all_weeks:
         hexbin_health_vs_lie(
             points=points_by_week[w],
@@ -478,7 +559,7 @@ def main() -> None:
     )
 
     # ----------------------------
-    # Console summary
+    # Console summary (existing)
     # ----------------------------
     print("\nAggregate summary (mean scores by profile, last week):")
     last_w = all_weeks[-1]
@@ -498,6 +579,32 @@ def main() -> None:
     print("  box_health_by_profile.png, box_lie_by_profile.png, box_extreme_by_profile.png")
     print("  hexbin_health_vs_lie_all.png, hexbin_health_vs_lie_week_*.png")
     print("  flag_rates_over_time.png")
+
+    # ----------------------------
+    # NEW: Effectiveness reporting (overall + per week)
+    # ----------------------------
+    print_confusion_report(
+        title="Infection detection (ground truth: name contains 'Infected'; predicted: is_flag_sick)",
+        conf=conf_infection_overall,
+    )
+    print_confusion_report(
+        title="Lying detection (ground truth: name contains 'Lying'; predicted: is_flag_lying)",
+        conf=conf_lying_overall,
+    )
+
+    print("\n=== Per-week confusion (Infection) ===")
+    for w in all_weeks:
+        print_confusion_report(
+            title=f"Week {w} Infection detection",
+            conf=conf_infection_by_week[w],
+        )
+
+    print("\n=== Per-week confusion (Lying) ===")
+    for w in all_weeks:
+        print_confusion_report(
+            title=f"Week {w} Lying detection",
+            conf=conf_lying_by_week[w],
+        )
 
 
 if __name__ == "__main__":

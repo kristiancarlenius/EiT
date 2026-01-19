@@ -236,10 +236,10 @@ def simulate_one_run(pattern_name: str, rng: random.Random) -> Dict[str, Any]:
 
 
 def main() -> None:
-    rng = random.Random(42)  # deterministic; change/remove for different runs
+    rng = random.Random(69)  # deterministic; change/remove for different runs
     pattern_cycle: List[str] = ["Healthy-Truthful", "Healthy-Lying", "Infected-Truthful", "Infected-Lying"]
 
-    total_runs = 20000
+    total_runs = 15000
     for i in range(total_runs):
         pattern_name = pattern_cycle[random.choices([0, 1, 2, 3], weights=[90, 9.7, 0.2, 0.1], k=1)[0]]
         record = simulate_one_run(pattern_name, rng)

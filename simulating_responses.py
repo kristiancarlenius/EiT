@@ -241,7 +241,7 @@ def main() -> None:
 
     total_runs = 10000
     for i in range(total_runs):
-        pattern_name = pattern_cycle[random.choices([0, 1, 2, 3], weights=[85, 14.7, 0.2, 0.1], k=1)[0]]
+        pattern_name = pattern_cycle[random.choices([0, 1, 2, 3], weights=[90, 9.7, 0.2, 0.1], k=1)[0]]
         record = simulate_one_run(pattern_name, rng)
         append_jsonl(RESULTS_PATH, record)
 

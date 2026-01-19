@@ -44,6 +44,11 @@ QUESTIONS: List[Tuple[str, int, bool]] = [
     ("q22", 1, False),
     ("q23", 1, True),
     ("q24", 2, False),
+    ("q25", 1, True),
+    ("q26", 4, True),
+    ("q27", 4, True),
+    ("q28", 1, True),
+    ("q29", 3, True)
 ]
 
 NORM: Dict[str, int] = {qid: norm for qid, norm, _ in QUESTIONS}

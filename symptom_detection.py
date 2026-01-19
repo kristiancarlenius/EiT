@@ -44,7 +44,12 @@ QUESTIONS = [
     ("q21", 1, False),
     ("q22", 1, False), 
     ("q23", 1, True), 
-    ("q24", 2, False)
+    ("q24", 2, False),
+    ("q25", 1, True),
+    ("q26", 4, True),
+    ("q27", 4, True),
+    ("q28", 1, True),
+    ("q29", 3, True)
     ]
 
 def read_jsonl(path: str) -> List[Dict[str, Any]]:

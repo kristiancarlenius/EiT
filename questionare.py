@@ -50,13 +50,11 @@ QUESTIONS: List[Question] = [
     Question("q22", "I frequently buy things without thinking about whether or not I can really afford them", 1, False),
     Question("q23", "I don’t like to make decisions quickly, even simple decisions, such as choosing what to wear, or what to have for dinner", 1, True),
     Question("q24", "I would enjoy working at a job that required me to make a lot of split-second decisions", 2, False),
-    """
-    Question("q25", "My friends say that I’m somewhat argumentative  . Modify: that i have changed my personality", ),
-    Question("q26", "Overall, how happy do you consider your life to be?"),
-    Question("q27", "How happy do you feel right now, at this moment?"),
-    Question("q28", "When I’m upset, my emotions are so overwhelming they prevent me from doing things"),
-    Question("q29", "I like sports and games in which you have to choose your next move very quickly"),
-    """
+    Question("q25", "My friends say that I’ve changed", 1, True),
+    Question("q26", "I am happy in life", 4, True),
+    Question("q27", "I am happy in this moment", 4, True),
+    Question("q28", "When I’m upset, my emotions are so overwhelming they prevent me from doing things", 1, True),
+    Question("q29", "I like sports and games in which you have to choose your next move very quickly", 3, True),
     # Add more questions here
 ]
 
